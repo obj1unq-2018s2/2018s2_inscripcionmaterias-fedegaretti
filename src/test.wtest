@@ -1,0 +1,53 @@
+import estudiante.*
+import materia.*
+import universidad.*
+
+describe"Test"{
+	
+	const tecnicaturaEnProgramacion = new Carrera(
+		materias = #{elementosDeProgramacion,matematica,objetos1,objetos2,matematica2,objetos3}
+	)
+	
+	const elementosDeProgramacion = new MateriaSinPrerrequisito(
+		carrera = tecnicaturaEnProgramacion,
+		creditos = 50,
+		anioQuePertenece = 1
+		
+	)
+	
+	const matematica = new MateriaSinPrerrequisito(
+		carrera = tecnicaturaEnProgramacion,
+		creditos = 50,
+		anioQuePertenece = 1
+	)
+	
+	const objetos1 = new MateriaCorrelativa(
+		carrera = tecnicaturaEnProgramacion,
+		creditos = 50,
+		anioQuePertenece = 1,
+		materiasCorrelativas = #{elementosDeProgramacion}
+	)
+	
+	const objetos2 = new MateriaCorrelativa(
+		carrera = tecnicaturaEnProgramacion,
+		creditos = 50,
+		anioQuePertenece = 2,
+		materiasCorrelativas = #{objetos1,matematica})
+		
+	const matematica2 = new MateriaPorCreditos(
+		carrera = tecnicaturaEnProgramacion,
+		creditos = 50,
+		anioQuePertenece = 3,
+		creditosNecesarios = 100
+		)
+	
+	const objetos3 = new MateriaPorAnio(
+		carrera = tecnicaturaEnProgramacion,
+		creditos = 50,
+		anioQuePertenece = 3
+		)
+	
+	test"test"{
+		assert
+	}
+}
