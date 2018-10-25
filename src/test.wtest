@@ -1,53 +1,111 @@
 import estudiante.*
 import materia.*
-import universidad.*
+import carrera.*
 
-describe"Test"{
+describe"Tests"{
+	const tecnicaturaEnProgramacion = new Carrera( materias=#{elementosDeProgramacion,intro,matematica,matematica2,objetos1,objetos2,objetos3} )
 	
-	const tecnicaturaEnProgramacion = new Carrera(
-		materias = #{elementosDeProgramacion,matematica,objetos1,objetos2,matematica2,objetos3}
+	var estudiante1 = new Estudiante (
+		carreras =#{tecnicaturaEnProgramacion},
+		materiasAprobadas = #{},
+		materiasQueCursa = #{},
+		materiasEnEspera =#{},
+		creditos = 0
+	)
+	var estudiante2 = new Estudiante (
+		carreras =#{tecnicaturaEnProgramacion},
+		materiasAprobadas = #{},
+		materiasQueCursa=#{},
+		materiasEnEspera =#{},
+		creditos = 0
+	)
+	var estudiante3 = new Estudiante (
+		carreras =#{tecnicaturaEnProgramacion},
+		materiasAprobadas = #{},
+		materiasQueCursa=#{},
+		materiasEnEspera =#{},
+		creditos = 0
+	)	
+	var estudiante4 = new Estudiante (
+		carreras =#{tecnicaturaEnProgramacion},
+		materiasAprobadas = #{},
+		materiasQueCursa=#{},
+		materiasEnEspera =#{},
+		creditos = 0
 	)
 	
-	const elementosDeProgramacion = new MateriaSinPrerrequisito(
+	const elementosDeProgramacion = new Materia(
 		carrera = tecnicaturaEnProgramacion,
 		creditos = 50,
-		anioQuePertenece = 1
-		
+		anioQuePertenece = 1,
+		cupo = 5
 	)
-	
-	const matematica = new MateriaSinPrerrequisito(
+	const intro = new Materia(
+		carrera=tecnicaturaEnProgramacion,
+		creditos=50,
+		anioQuePertenece = 1, 
+		cupo = 20
+		)
+	const matematica = new Materia(
 		carrera = tecnicaturaEnProgramacion,
 		creditos = 50,
-		anioQuePertenece = 1
+		anioQuePertenece = 1,
+		cupo = 1
 	)
 	
 	const objetos1 = new MateriaCorrelativa(
 		carrera = tecnicaturaEnProgramacion,
 		creditos = 50,
 		anioQuePertenece = 1,
-		materiasCorrelativas = #{elementosDeProgramacion}
+		materiasCorrelativas = #{intro},
+		cupo = 5
 	)
 	
 	const objetos2 = new MateriaCorrelativa(
 		carrera = tecnicaturaEnProgramacion,
 		creditos = 50,
 		anioQuePertenece = 2,
-		materiasCorrelativas = #{objetos1,matematica})
+		materiasCorrelativas = #{objetos1,matematica},
+		cupo = 5
+	)
 		
 	const matematica2 = new MateriaPorCreditos(
 		carrera = tecnicaturaEnProgramacion,
 		creditos = 50,
 		anioQuePertenece = 3,
-		creditosNecesarios = 100
-		)
+		creditosNecesarios = 100,
+		cupo = 5
+	)
 	
 	const objetos3 = new MateriaPorAnio(
 		carrera = tecnicaturaEnProgramacion,
 		creditos = 50,
-		anioQuePertenece = 3
-		)
-	
-	test"test"{
-		assert
+		anioQuePertenece = 3,
+		cupo = 5
+	)
+	fixture{	
+		estudiante1.aproboMateria(elementosDeProgramacion,10)
+		estudiante2.aproboMateria(elementosDeProgramacion,7)
+		estudiante3.aproboMateria(elementosDeProgramacion,9)
+		matematica.inscribir(estudiante1)
+		matematica.inscribir(estudiante2)
+		intro.inscribir(estudiante1)
+		intro.inscribir(estudiante2)
+		intro.inscribir(estudiante3)
+		
+		
 	}
+	
+	test "estudiante2 se intenta inscribir a una materia que ya curso"{
+		assert.equals(intro.inscribir(estudiante2),false)
+	}
+	test "estudiante4 intenta anotarse en objetos pero no aprobo la correlativa"{
+		assert.equals(objetos1.inscribir(estudiante4),false)
+	}
+	test "estudiante3 queda en lista de espera para matematica" {
+		matematica.inscribir(estudiante3)
+		assert.equals(estudiante3.materiasEnEspera(),#{matematica})
+		assert.equals(matematica.estudiantesEnListaDeEspera(),[estudiante2,estudiante3])
+	}
+	
 }

@@ -1,30 +1,54 @@
 import estudiante.*
-import universidad.*
+import carrera.*
 
 class Materia {
 
 	const property carrera
-	const creditos
+	const property creditos
 	const property anioQuePertenece
-	var curso = #{}
+	const cupo
+	var listaDeEspera = []
+	var curso = #{}//Conjunto de alumnos que cursan la materia
 
-	method prerrequisitos(estudiante)
+	method prerrequisitos(estudiante) = estudiante.cursaCarrera(carrera)
 	
-	method agregarEstudiante(estudiante) {
-		curso.add(estudiante)
+	method hayCupo() = cupo > curso.size()
+	
+	method ponerEnEspera(estudiante){
+		listaDeEspera.add(estudiante)
 	}
-
-	method sacarEstudiante(estudiante) {
+	method sacarDeEspera(estudiante){
+		listaDeEspera.remove(estudiante)
+	}
+	
+	method inscribir(estudiante) {
+		if(estudiante.puedeCursar(self) and self.hayCupo()){
+			estudiante.inscribirseAMateria(self)
+			curso.add(estudiante)
+		}else if(estudiante.puedeCursar(self) and !self.hayCupo()){
+			self.ponerEnEspera(estudiante)
+			estudiante.ponerMateriaEnEspera(self)
+		}
+	}
+	method darDeBaja(estudiante){
 		curso.remove(estudiante)
+		self.anotarProximoEstudiante()
 	}
+	method anotarProximoEstudiante(){
+		self.inscribir(listaDeEspera.first())
+		self.sacarDeEspera(listaDeEspera.first())
+	}
+	method estudiantesInscriptos() = curso
+	method estudiantesEnListaDeEspera() = listaDeEspera 
 }
-
 class MateriaCorrelativa inherits Materia {
 
 	const materiasCorrelativas
 
 	override method prerrequisitos(estudiante) =
-		 materiasCorrelativas.all{ materia => estudiante.materiasAprobadas().contains(materia) }
+		 super(estudiante) and materiasCorrelativas.all{ 
+		 	materia => estudiante.materiasAprobadas().contains(materia)
+		 }
 	
 }
 
@@ -33,29 +57,25 @@ class MateriaPorCreditos inherits Materia {
 	const creditosNecesarios
 
 	override method prerrequisitos(estudiante) =
-		estudiante.creditos() >= creditosNecesarios
+		super(estudiante) and estudiante.creditos() >= creditosNecesarios
 
 }
 
 class MateriaPorAnio inherits Materia {
 
 	override method prerrequisitos(estudiante) =
-		carrera.materias().filter{ 
-			materia =>  materia.anioQuePertenece() == self.anioQuePertenece() - 1}.all{
-				materia => estudiante.materiasAprobadas().contains(materia)
-			}//FALTO SEPARAR EN SUBMETODOS	
-}
-
-class MateriaSinPrerrequisito inherits Materia {
+		super(estudiante) and self.estudianteAproboMaterias(self.materiasDeAnioAnterior(), estudiante)
 	
-	override method prerrequisitos(estudiante) {}
+	method materiasDeAnioAnterior() = carrera.materias().filter{ 
+			materia =>  materia.anioQuePertenece() == self.anioQuePertenece() - 1
+			}
+	method estudianteAproboMaterias(materias, estudiante) = 
+		materias.all{materia => estudiante.materiasAprobadas().contains(materia)}
 }
 
 class MateriaAprobada {
 
-	const materia
-	const alumno
-	const nota
-
-
+	const property materia
+	const estudiante
+	const property nota
 }
