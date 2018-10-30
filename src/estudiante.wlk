@@ -12,16 +12,23 @@ class Estudiante {
 		materiasQueCursa.add(materia)
 	}
 	
-	method puedeCursar(materia) = 
-		self.noAproboNiCursa(materia) and 
+	method puedeCursar(materia) { 
+		//self.noAproboNiCursa(materia)
+		not self.aproboMateria(materia) 
+		and not self.cursaMateria(materia) 
+		and not self.cursaCarrera(materia.carrera())
 		materia.prerrequisitos(self)
-	
-	method noAproboNiCursa(materia) =
-		!materiasAprobadas.contains(materia) and !materiasQueCursa.contains(materia)
+	}
 		
 	method cursaCarrera(carrera) = carreras.contains(carrera)
 	
-	method aproboMateria(materia,nota){
+	method cursaMateria(materia) = materiasQueCursa.contains(materia)
+	
+	method aproboMateria(materia) = materiasAprobadas.any {
+		materiaAprobada => materiaAprobada.materia() == materia
+	}
+	
+	method registrarAprobacion(materia,nota){
 		var materiaAprobada = new MateriaAprobada(materia = materia, estudiante = self, nota = nota)
 		if(!materiasAprobadas.any{ mate => mate.materia() == materiaAprobada.materia()}){
 			materiasAprobadas.add(materiaAprobada)

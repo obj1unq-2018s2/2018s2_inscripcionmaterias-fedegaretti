@@ -47,7 +47,7 @@ class MateriaCorrelativa inherits Materia {
 
 	override method prerrequisitos(estudiante) =
 		 super(estudiante) and materiasCorrelativas.all{ 
-		 	materia => estudiante.materiasAprobadas().contains(materia)
+		 	materia => estudiante.aproboMateria(materia)
 		 }
 	
 }
