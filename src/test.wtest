@@ -3,10 +3,12 @@ import materia.*
 import carrera.*
 
 describe"Tests"{
+	// TODO Estás usando las variables antes de inicializarlas, no va a funcionar.
 	const tecnicaturaEnProgramacion = new Carrera( materias=#{elementosDeProgramacion,intro,matematica,matematica2,objetos1,objetos2,objetos3} )
 	
 	var estudiante1 = new Estudiante (
 		carreras =#{tecnicaturaEnProgramacion},
+		// TODO Los atributos que siguen podrían inicializarse por default en su definición.
 		materiasAprobadas = #{},
 		materiasQueCursa = #{},
 		materiasEnEspera =#{},
@@ -97,9 +99,11 @@ describe"Tests"{
 	}
 	
 	test "estudiante2 se intenta inscribir a una materia que ya curso"{
+		// TODO Esto debería tirar excepción
 		assert.equals(intro.inscribir(estudiante2),false)
 	}
 	test "estudiante4 intenta anotarse en objetos pero no aprobo la correlativa"{
+		// TODO Esto debería tirar excepción
 		assert.equals(objetos1.inscribir(estudiante4),false)
 	}
 	test "estudiante3 queda en lista de espera para matematica" {

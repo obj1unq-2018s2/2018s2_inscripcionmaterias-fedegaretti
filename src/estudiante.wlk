@@ -16,7 +16,9 @@ class Estudiante {
 		//self.noAproboNiCursa(materia)
 		not self.aproboMateria(materia) 
 		and not self.cursaMateria(materia) 
-		and not self.cursaCarrera(materia.carrera())
+		and not self.cursaCarrera(materia.carrera()) // TODO Esta condición se valida dos veces innecesariamente.
+		
+		// TODO Falta un conector lógico con esta condición.
 		materia.prerrequisitos(self)
 	}
 		
@@ -29,6 +31,7 @@ class Estudiante {
 	}
 	
 	method registrarAprobacion(materia,nota){
+		// TODO Más prolijo crear este objeto dentro del if.
 		var materiaAprobada = new MateriaAprobada(materia = materia, estudiante = self, nota = nota)
 		if(!materiasAprobadas.any{ mate => mate.materia() == materiaAprobada.materia()}){
 			materiasAprobadas.add(materiaAprobada)
